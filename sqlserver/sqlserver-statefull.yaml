@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-set
+spec:
+  selector:
+    matchLabels:
+      app: mssql-local
+  serviceName: "mssql-local"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mssql-local
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mssql-local
+          image: mcr.microsoft.com/mssql/server
+          ports:
+            - containerPort: 1433
+          env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              value: P@55w0rd
+          volumeMounts:
+            - name: mssqldb
+              mountPath: mssql/data
+      volumes:
+        - name: mssqldb
+          persistentVolumeClaim:
+            claimName: dbclaim
