@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    app: nginx
+spec:
+  type: LoadBalancer # Ou NodePort, dependendo do seu ambiente
+  ports:
+    - port: 80 # Porta pública
+      targetPort: 80 # Porta do container Nginx
+  selector:
+    app: nginx

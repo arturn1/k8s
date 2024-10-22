@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-commander
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-commander
+  template:
+    metadata:
+      labels:
+        app: redis-commander
+    spec:
+      containers:
+        - name: redis-commander
+          image: rediscommander/redis-commander:latest # Imagem do Redis Commander
+          ports:
+            - containerPort: 8081 # Porta onde o Redis Commander estará disponível
+          env:
+            - name: REDIS_HOSTS # Variável de ambiente para conectar ao Redis
+              value: "redis-service" # Define o serviço Redis como destino
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-commander-service
+spec:
+  selector:
+    app: redis-commander
+  ports:
+    - port: 8081 # Porta exposta para a interface do Redis Commander
+      targetPort: 8081
+  type: NodePort # Expondo o serviço para ser acessado de fora do cluster

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-app-service
+spec:
+  selector:
+    app: react-app
+  ports:
+    - protocol: TCP
+      port: 8080 # Porta que será exposta para os usuários
+      targetPort: 80 # Porta que o container está usando
+  type: NodePort # LoadBalancer permite redirecionamento de tráfego entre os pods

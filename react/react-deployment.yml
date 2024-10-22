@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app-deployment-v2
+  labels:
+    app: react-app-v2
+spec:
+  replicas: 1 # Definindo múltiplas réplicas para garantir disponibilidade durante o deploy
+  selector:
+    matchLabels:
+      app: react-app-v2
+  # strategy:
+  #   type: RollingUpdate # Estratégia de Rolling Update
+  #   rollingUpdate:
+  #     maxUnavailable: 0 # Garante que todos os pods estejam disponíveis durante o deploy
+  #     maxSurge: 1 # Permite adicionar 1 pod adicional enquanto o upgrade é feito
+  template:
+    metadata:
+      labels:
+        app: react-app-v2
+    spec:
+      containers:
+        - name: react-app-container
+          image: react-app-image-v2 # Substitua pela sua imagem Docker
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
+          # readinessProbe: # Probing para garantir que o pod esteja pronto antes de receber tráfego
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 5 # Atraso antes da primeira checagem
+          #   periodSeconds: 10 # Intervalo entre as checagens
+          #   successThreshold: 1 # Número de checagens que devem passar para considerar o pod pronto
+          #   failureThreshold: 3 # Quantas checagens podem falhar antes de considerar o pod como não pronto
+          # livenessProbe: # Verifica se o container está vivo e deve ser reiniciado se estiver com problemas
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 10 # Atraso antes da primeira checagem
+          #   periodSeconds: 10 # Checagem a cada 10 segundos
+          #   failureThreshold: 3 # Quantas falhas são permitidas antes do Kubernetes reiniciar o pod

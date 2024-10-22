@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingresss
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx # Aqui você especifica o IngressClass
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /app1
+            pathType: Prefix
+            backend:
+              service:
+                name: char-dot-net-service # Serviço Kubernetes para microserviço 1
+                port:
+                  number: 5050
+          - path: /app2
+            pathType: Prefix
+            backend:
+              service:
+                name: char-dot-net-service-v5 # Serviço Kubernetes para microserviço 2
+                port:
+                  number: 5050

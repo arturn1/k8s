@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1 # Define um único pod para o Redis
+  selector:
+    matchLabels:
+      app: redis # Label usado para identificar o pod Redis
+  template:
+    metadata:
+      labels:
+        app: redis # Label dentro do template
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest # Usando a imagem oficial do Redis mais recente
+          ports:
+            - containerPort: 6379 # Porta padrão do Redis
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis # Seleciona o pod com o label 'app: redis'
+  ports:
+    - port: 6379 # Porta externa para expor o serviço
+      targetPort: 6379 # Porta no contêiner Redis
+  type: ClusterIP # O serviço é acessível apenas dentro do cluster

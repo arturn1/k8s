@@ -2,10 +2,10 @@
 
 # URL para enviar as requisições
 # URL="http://localhost:5050/api/GetUser/2"
-URL="http://localhost:5050/api/GetUser/1"
+URL="http://localhost:5051/api"
 
 # Número de requisições a serem enviadas
-NUM_REQUESTS=1000
+NUM_REQUESTS=500
 
 # Número de vezes que o loop externo será executado
 NUM_LOOPS=10

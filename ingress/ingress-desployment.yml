@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: local-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: / # Garante que os caminhos sejam reescritos corretamente
+spec:
+  ingressClassName: nginx # Adicionando a IngressClass
+  rules:
+    - host: localhost # Usando localhost como host
+      http:
+        paths:
+          - path: /react-app
+            pathType: Prefix
+            backend:
+              service:
+                name: react-app-service # Serviço React App
+                port:
+                  number: 8080
+          - path: /redis-bull
+            pathType: Prefix
+            backend:
+              service:
+                name: redis-bull-service # Serviço Redis Bull
+                port:
+                  number: 5005

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0 # Usando a imagem do MySQL 8.0
+          ports:
+            - containerPort: 3306 # Porta padrão do MySQL
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "YourPassword123!" # Senha do usuário root (pode ser usada para administrar o banco)
+            - name: MYSQL_DATABASE
+              value: "MyDatabase" # Nome do banco de dados a ser criado
+            - name: MYSQL_USER
+              value: "appuser" # Nome do usuário MySQL padrão (crie conforme necessário)
+            - name: MYSQL_PASSWORD
+              value: "YourPassword123!" # Senha do usuário padrão
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql # Diretório onde o MySQL armazena seus dados
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-dbclaim # Usar o PVC dbclaim para montar o volume persistente

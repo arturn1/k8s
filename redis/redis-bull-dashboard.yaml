@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-bull-deployment
+  labels:
+    app: redis-bull-deployment
+spec:
+  # replicas: 2
+  selector:
+    matchLabels:
+      app: redis-bull-deployment
+  template:
+    metadata:
+      labels:
+        app: redis-bull-deployment
+    spec:
+      containers:
+        - name: express-bull-container
+          image: redis-bull-image # Use o nome da imagem que você gerou
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5005
+          env:
+            - name: REDIS_HOST
+              value: "redis-service" # Nome do serviço Redis no Kubernetes
+            - name: REDIS_PORT
+              value: "6379"
+          # livenessProbe:
+          #   httpGet:
+          #     path: /admin/queues # Verifica se o Bull Board está rodando
+          #     port: 3001
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /admin/queues # Verifica se a aplicação está pronta
+          #     port: 3001
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-bull-service
+  labels:
+    app: redis-bull-service
+spec:
+  type: NodePort
+  ports:
+    - port: 5005
+      targetPort: 5005
+  selector:
+    app: redis-bull-deployment

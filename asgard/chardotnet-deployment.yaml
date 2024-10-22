@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asgard-deployment
+  labels:
+    app: asgard-deploy-label
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asgard-deployment
+  strategy:
+    type: RollingUpdate # Estrategia de atualização gradual (padrão)
+    rollingUpdate:
+      maxSurge: 1 # Número máximo de novos pods criados durante a atualização (pode ser maior que o número de réplicas)
+      maxUnavailable: 0 # Garante que nenhum pod ficará indisponível durante o rollout
+  revisionHistoryLimit: 10 # Mantém 10 versões anteriores para rollback
+  minReadySeconds: 10 # Tempo mínimo que o pod deve estar "ready" antes de ser considerado saudável
+  progressDeadlineSeconds: 60 # Tempo máximo para o rollout antes de marcar como falha
+  template:
+    metadata:
+      labels:
+        app: asgard-deployment
+    spec:
+      containers:
+        - name: asgard
+          image: asgard-image
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
